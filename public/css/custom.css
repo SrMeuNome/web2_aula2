@@ -1,0 +1,69 @@
+fieldset
+{
+    display: block;
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-bottom: 20px;
+    padding-top: 0.35em;
+    padding-bottom: 0.625em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    border: 3px groove black;
+    border-radius: 5px;
+}
+
+table
+{
+    text-align: center;
+    box-shadow: 5px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.title
+{
+    font-size: 2vw;
+    text-shadow: 5px 2px 8px rgba(0, 0, 0, 0.3);
+    width: auto;
+    font-weight: bold;
+}
+
+.icon
+{
+    display: inline-flex !important;
+    justify-items: center !important;
+    align-content: center !important;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: inherit;
+}
+
+
+.btn-custom-group
+{
+    justify-content: flex-end;
+}
+
+.btn-custom-group button:nth-child(odd)
+{
+    margin-right: 1vw !important;
+}
+
+.btn-circle
+{
+    border-radius: 100% !important;
+}
+
+.custom-table
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-title
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 92vh;
+    flex-direction: column;
+}
