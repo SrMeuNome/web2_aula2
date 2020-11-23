@@ -9,4 +9,14 @@ class Animal extends Model
 {
     use HasFactory;
     protected $table = "animal";
+
+    public function objEspecie()
+    {
+        return $this->hasOne("App\Models\Especie", "id", "id_especie");
+    }
+
+    public function listaDonos()
+    {
+        return $this->belongsToMany("App\Models\Dono", "dono_animal", "id_animal", "id_dono");
+    }
 }

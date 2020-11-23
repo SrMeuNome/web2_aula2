@@ -13,8 +13,8 @@ class Dono extends Migration
      */
     public function up()
     {
-        Schema::create('animal', function (Blueprint $table) {
-            $table->dropColumn("dono", 100);
+        Schema::table('animal', function (Blueprint $table) {
+            $table->dropColumn("dono");
         });
     }
 
@@ -25,8 +25,8 @@ class Dono extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('animal', function (Blueprint $table) {
-            $table->string("dono", 100);
+        Schema::table('animal', function (Blueprint $table) {
+            $table->string("dono");
         });
     }
 }

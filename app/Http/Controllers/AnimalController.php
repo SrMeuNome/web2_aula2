@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Animal;
 use App\Models\Especie;
+use App\Models\Dono;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -18,15 +19,14 @@ class AnimalController extends Controller
     public function index()
     {
         $animal = new Animal();
-        $animais = DB::table('animal AS a')
-            ->join('especie AS e', 'e.id', '=', 'a.id_especie')
-            ->select('a.id', 'a.nome', 'a.idade', 'e.nome AS especie')
-            ->get();
+        $animais = Animal::all();
         $especies = Especie::all();
+        $donos = Dono::all();
         return view("animal.index", [
             "animal" => $animal,
             "animais" => $animais,
-            "especies" => $especies
+            "especies" => $especies,
+            "donos" => $donos
         ]);
     }
 
@@ -48,6 +48,17 @@ class AnimalController extends Controller
      */
     public function store(Request $request)
     {
+        $validacao = $request->validate([
+            "nome" => "required",
+            "dat_nasc" => "required|date|before:now",
+            "especie" => "required",
+            "raca" => "required",
+            "dono" => "required"
+        ], [
+            "*.required" => "O [:attribute] é obrigatório.",
+            "*.before" => "A [:attribute] é menor que a data atual."
+        ]);
+
         if ($request->post('id') == '') {
             $animal = new Animal();
         } else {
@@ -57,9 +68,15 @@ class AnimalController extends Controller
         $animal->dat_nasc = $request->post('dat_nasc');
         $animal->id_especie = $request->post('especie');
         $animal->raca = $request->post('raca');
-        $animal->dono = $request->post('dono');
         $animal->idade = intval((intval(strtotime(date("Y/m/d"))) - intval(strtotime(date("Y/m/d", strtotime($animal->dat_nasc))))) / (365 * 24 * 60 * 60));
         $animal->save();
+
+        $animal->listaDonos()->detach();
+
+        foreach ($request->post("dono") as $dono) {
+            $animal->listaDonos()->attach($dono);
+        }
+
         $request->session()->flash('salvar', 'Animal salvo com sucesso!');
         return redirect('/animal');
     }
@@ -84,15 +101,14 @@ class AnimalController extends Controller
     public function edit($id)
     {
         $animal = Animal::find($id);
-        $animais = DB::table('animal AS a')
-            ->join('especie AS e', 'e.id', '=', 'a.id_especie')
-            ->select('a.id', 'a.nome', 'a.idade', 'e.nome AS especie')
-            ->get();
+        $animais = Animal::all();
         $especies = Especie::all();
+        $donos = Dono::all();
         return view("animal.index", [
             "animal" => $animal,
             "animais" => $animais,
-            "especies" => $especies
+            "especies" => $especies,
+            "donos" => $donos
         ]);
     }
 
@@ -116,6 +132,8 @@ class AnimalController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        $animal = Animal::Find($id);
+        $animal->listaDonos()->detach();
         Animal::destroy($id);
         $request->session()->flash('excluir', "Animal excluido com sucesso!");
         return redirect('/animal');

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\EspecieController;
+use App\Http\Controllers\DonoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +18,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::resources([
     "animal" => AnimalController::class,
-    "especie" => EspecieController::class
+    "especie" => EspecieController::class,
+    "dono" => DonoController::class
 ]);
 
 Route::get('/', function () {

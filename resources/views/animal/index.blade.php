@@ -31,7 +31,15 @@
             </div>
             <div class="form-group col-12">
                 <label for="dono" class="form-text">Nome do Dono:</label>
-                <input value="{{$animal->dono}}" id="dono" name="dono" class="form-control" type="text">
+                <select id="dono" name="dono[]" class="form-control" required multiple>
+                    @foreach ($donos as $dono)
+                        @if ($animal->listaDonos()->where("id", $dono->id)->count() > 0)
+                            <option value="{{$dono->id}}" selected>{{$dono->nome}}</option>
+                        @else
+                            <option value="{{$dono->id}}">{{$dono->nome}}</option>
+                        @endif
+                    @endforeach
+                </select>
                 <input value="{{$animal->id}}" id="id" name="id" type="hidden">
             </div>
             @csrf
@@ -40,6 +48,11 @@
                 <button type="reset" class="btn btn-outline-warning icon"><i class="material-icons">clear</i></button>
             </div>
         </form>
+        <script>
+            $(document).ready(function() {
+                $("#dono").selectpicker("refresh")
+            });
+        </script>
     </div>
 @endsection
 
@@ -61,7 +74,7 @@
                     <tr> 
                         <td>{{$animal->nome}}</td>
                         <td>{{$animal->idade}}</td>
-                        <td>{{$animal->especie}}</td>
+                        <td>{{$animal->objEspecie->nome}}</td>
                         <td>
                             <form method="GET" action="/animal/{{$animal->id}}/edit">
                                 <div class="btn-custom-group">

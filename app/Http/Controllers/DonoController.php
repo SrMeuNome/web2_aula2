@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dono;
+use App\Models\Animal;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Especie;
 
-class EspecieController extends Controller
+class DonoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,15 +15,13 @@ class EspecieController extends Controller
      */
     public function index()
     {
-        $especie = new especie();
-        $especies = DB::table("especie as e")
-            ->leftJoin("animal as a", "e.id", "=", "a.id_especie")
-            ->groupBy("e.id", "e.nome")
-            ->select("e.id", "e.nome", DB::raw("COUNT(a.id) as qtd_animais"))
-            ->get();
-        return view("especie.index", [
-            "especies" => $especies,
-            "especie" => $especie,
+        $dono = new Dono();
+        $donos = Dono::all();
+        $animais = Animal::all();
+        return view("dono.index", [
+            "dono" => $dono,
+            "donos" => $donos,
+            "animais" => $animais
         ]);
     }
 
@@ -46,20 +44,25 @@ class EspecieController extends Controller
     public function store(Request $request)
     {
         $validacao = $request->validate([
-            "especie" => "required"
+            "nome" => "required",
+            "cpf" => "required"
         ], [
             "*.required" => "O [:attribute] é obrigatório."
         ]);
 
-        if ($request->post('id') == '') {
-            $especie = new Especie();
+        if ($request->post("id") == '') {
+            $dono = new Dono();
         } else {
-            $especie = Especie::find($request->post("id"));
+            $dono = Dono::Find($request->post("id"));
         }
-        $especie->nome = $request->post('especie');
-        $especie->save();
-        $request->session()->flash('salvar', 'Espécie salva com sucesso!');
-        return redirect('/especie');
+
+        $dono->nome = $request->post("nome");
+        $dono->cpf = $request->post("cpf");
+
+        $dono->save();
+
+        $request->session()->flash('salvar', 'Dono salvo com sucesso!');
+        return redirect('/dono');
     }
 
     /**
@@ -81,15 +84,13 @@ class EspecieController extends Controller
      */
     public function edit($id)
     {
-        $especies = DB::table("especie as e")
-            ->leftJoin("animal as a", "e.id", "=", "a.id_especie")
-            ->groupBy("e.id", "e.nome")
-            ->select("e.id", "e.nome", DB::raw("COUNT(a.id) as qtd_animais"))
-            ->get();
-        $especie = Especie::find($id);
-        return view('especie.index', [
-            "especies" => $especies,
-            "especie" => $especie
+        $dono = Dono::find($id);
+        $donos = Dono::all();
+        $animais = Animal::all();
+        return view("dono.index", [
+            "dono" => $dono,
+            "donos" => $donos,
+            "animais" => $animais
         ]);
     }
 
@@ -113,8 +114,8 @@ class EspecieController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        Especie::destroy($id);
-        $request->session()->flash('excluir', 'Espécie excluida com sucesso!');
-        return redirect('/especie');
+        Dono::destroy($id);
+        $request->session()->flash('excluir', "Dono excluido com sucesso!");
+        return redirect('/dono');
     }
 }

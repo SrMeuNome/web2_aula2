@@ -43,13 +43,17 @@
                         </td>
                         
                         <td>
-                            <div class="btn-custom-group">
-                                <form method="POST" action="/especie/{{$especie->id}}">
-                                    @csrf
-                                    <input type="hidden" name="_method" value="delete" />
-                                    <button onclick="return confirm('Você deseja realmente deletar essa espécie?')" class="btn btn-outline-danger icon btn-circle" type="submit"><i class="material-icons">delete</i></button>
-                                </form>
-                            </div>
+                            @if ($especie->qtd_animais == 0)
+                                <div class="btn-custom-group">
+                                    <form method="POST" action="/especie/{{$especie->id}}">
+                                        @csrf
+                                        <input type="hidden" name="_method" value="delete" />
+                                        <button onclick="return confirm('Você deseja realmente deletar essa espécie?')" class="btn btn-outline-danger icon btn-circle" type="submit"><i class="material-icons">delete</i></button>
+                                    </form>
+                                </div>
+                            @else
+                                Existe animais vinculados a esta espécie
+                            @endif
                         </td>
                     </tr>
                 @endforeach
